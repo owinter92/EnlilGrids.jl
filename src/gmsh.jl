@@ -9,10 +9,15 @@ Loads the `filename` into separete arrays according to the gmsh file format styl
 # Keywords
 
 # Returns
-- `NamedTuple`: the index where `val` is located in the `array`
+- `NamedTuple`: gmsh file is separated into the arrays of substring:
+    - msh_version - constains infomartion about gmsh file version,
+    - msh_PhysicalNames - constains data about physical objects,
+    - msh_Entities - constains data about entities,
+    - msh_Nodes - constains data about nodes including coordinates,
+    - msh_Elements - constains data about elements,
 
 # Throws
-- `Error`: file with name `filename` does not exists.
+- `Error`: file with name `filename` does not exists,
 - `Error`: file with name `filename` is saved in binary mode.
 """
 function load_gmsh_file(filename::AbstractString)
@@ -54,17 +59,31 @@ function load_gmsh_file(filename::AbstractString)
 end
 
 """
-general
+    gmsh_do_physicalnames!(raw_PhysicalNames) -> NamedTuple
+
+Split raw_PhysicalNames in to one Dict for each dimension.
+
+# Arguments
+- `raw_PhysicalNames`: data about physical names in gmsh,
+
+# Keywords
+
+# Returns
+- `NamedTuple`: one `Dict{Int,String}` for each dimension, `physicalTag => Name`: 
+    - physicalTag1DtoName - maps physicalTag to Name for 1D objects,
+    - physicalTag2DtoName - maps physicalTag to Name for 2D objects,
+    - physicalTag3DtoName - maps physicalTag to Name for 3D objects,
+
+# Throws
 """
-function do_physicalnames!(msh)
-    msh_PhysicalNames=msh[:msh_PhysicalNames]
-    n=parse(Int,popfirst!(msh_PhysicalNames))
-    
+function gmsh_do_physicalnames(raw_PhysicalNames)
+    n=parse(Int,raw_PhysicalNames[1])
+
     physicalTag1DtoName=Dict{Int,String}()
     physicalTag2DtoName=Dict{Int,String}()
     physicalTag3DtoName=Dict{Int,String}()
-    for v in msh_PhysicalNames
-        s=split(v)
+    for i in 2:length(raw_PhysicalNames)
+        s=split(raw_PhysicalNames[i])
         if s[1] == "1"
             physicalTag1DtoName[parse(Int,s[2])]=s[3]
         elseif s[1] == "2"
@@ -73,8 +92,6 @@ function do_physicalnames!(msh)
             physicalTag3DtoName[parse(Int,s[2])]=s[3]
         end
     end
-    
-    msh_PhysicalNames=String[]
     
     return (physicalTag1DtoName=physicalTag1DtoName,
             physicalTag2DtoName=physicalTag2DtoName,
