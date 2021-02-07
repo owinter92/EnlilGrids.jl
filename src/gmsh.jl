@@ -52,16 +52,16 @@ function load_gmsh_file(filename::AbstractString)
     raw_Elements=msh[iElements+1:iEndElements-1]
 
     return (msh_version=msh_version,
-            msh_PhysicalNames=raw_PhysicalNames,
-            msh_Entities=raw_Entities,
-            msh_Nodes=raw_Nodes,
-            msh_Elements=raw_Elements)
+            raw_PhysicalNames=raw_PhysicalNames,
+            raw_Entities=raw_Entities,
+            raw_Nodes=raw_Nodes,
+            raw_Elements=raw_Elements)
 end
 
 """
     gmsh_do_physicalnames!(raw_PhysicalNames) -> NamedTuple
 
-Split raw_PhysicalNames in to one Dict for each dimension.
+Split `raw_PhysicalNames` created by [`load_gmsh_file`](@ref) in to one Dict for each dimension.
 
 # Arguments
 - `raw_PhysicalNames`: data about physical names in gmsh,
