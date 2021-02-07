@@ -13,5 +13,5 @@ end
 @testset "gmsh_do_physicalnames" begin
     msh=load_gmsh_file("data/gmsh_v41_1.msh")
     physicalTagtoName=(physicalTag1DtoName = Dict(4 => "Left",2 => "Right",3 => "Bottom",1 => "Top"), physicalTag2DtoName = Dict(5 => "Fluid"), physicalTag3DtoName = Dict{Int64,String}())
-    @test gmsh_do_physicalnames(msh[:msh_PhysicalNames]) == physicalTagtoName
+    @test gmsh_do_physicalnames(msh[:raw_PhysicalNames]) == physicalTagtoName
 end
