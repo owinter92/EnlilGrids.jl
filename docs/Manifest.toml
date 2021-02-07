@@ -24,9 +24,10 @@ uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.26.1"
 
 [[EnlilGrids]]
+deps = ["RandomTweaks"]
 path = ".."
 uuid = "44994717-8eef-47f3-a7e0-6b313e1778f0"
-version = "0.1.0"
+version = "0.1.1"
 
 [[IOCapture]]
 deps = ["Logging"]
@@ -82,6 +83,11 @@ uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 [[Random]]
 deps = ["Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[[RandomTweaks]]
+git-tree-sha1 = "11127cbf1c971481d174f8d0c67b47427a8fc330"
+uuid = "97e8ad84-0770-496d-b901-33f7e6c3230c"
+version = "0.1.0"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
