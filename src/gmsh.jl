@@ -59,7 +59,7 @@ function load_gmsh_file(filename::AbstractString)
 end
 
 """
-    gmsh_do_physicalnames!(raw_PhysicalNames) -> NamedTuple
+    gmsh_do_physicalnames(raw_PhysicalNames) -> NamedTuple
 
 Split `raw_PhysicalNames` created by [`load_gmsh_file`](@ref) in to one Dict for each dimension.
 
@@ -99,15 +99,27 @@ function gmsh_do_physicalnames(raw_PhysicalNames)
 end
 
 """
-not general
-only one physicaltag per entity
-"""
-function do_entities!(msh)
-    msh_Entities=msh[:msh_Entities]
+    gmsh_do_entities(raw_Entities) -> NamedTuple
 
+Split `raw_Entities` created by [`load_gmsh_file`](@ref) in to one Dict for each type of entity. Operates with only one physicalTag per entity.
+
+# Arguments
+- `raw_Entities`: data about entities in gmsh,
+
+# Keywords
+
+# Returns
+- `NamedTuple`: one `Dict{Int,String}` for each dimension, `entityTag => physicalTag`: 
+    - pointTagtoPhysicalTag,
+    - curveTagtoPhysicalTag,
+    - surfaceTagtoPhysicalTag,
+    - volumeTagtoPhysicalTag.
+
+# Throws
+"""
+function gmsh_do_entities(raw_Entities)
     numPoints, numCurves, numSurfaces, numVolumes =
-        (parse(Int,v) for v in split(popfirst!(msh_Entities)))
-    
+        (parse(Int,v) for v in split(raw_Entities[1]))
     
     pointTagtoPhysicalTag=Dict{Int,Int}()
     curveTagtoPhysicalTag=Dict{Int,Int}()
@@ -115,43 +127,39 @@ function do_entities!(msh)
     volumeTagtoPhysicalTag=Dict{Int,Int}()
     
     if numPoints != 0
-        for i in 1:numPoints
-            s=split(msh_Entities[i])
+        for i in 2:1+numPoints
+            s=split(raw_Entities[i])
             if parse(Int,s[5]) != 0
                 pointTagtoPhysicalTag[parse(Int,s[1])]=parse(Int,s[6])
             end
         end
-        deleteat!(msh_Entities,1:numPoints)
     end
     
     if numCurves != 0
-        for i in 1:numCurves
-            s=split(msh_Entities[i])
+        for i in 2+numPoints:1+numPoints+numCurves
+            s=split(raw_Entities[i])
             if parse(Int,s[8]) != 0
                 curveTagtoPhysicalTag[parse(Int,s[1])]=parse(Int,s[9])
             end
         end
-        deleteat!(msh_Entities,1:numCurves)
     end
     
     if numSurfaces != 0
-        for i in 1:numSurfaces
-            s=split(msh_Entities[i])
+        for i in 2+numPoints+numCurves:1+numPoints+numCurves+numSurfaces
+            s=split(raw_Entities[i])
             if parse(Int,s[8]) != 0
                 surfaceTagtoPhysicalTag[parse(Int,s[1])]=parse(Int,s[9])
             end
         end
-        deleteat!(msh_Entities,1:numSurfaces)
     end
     
     if numVolumes != 0
-        for i in 1:numVolumes
+        for i in 2+numPoints+numCurves+numSurfaces:1+numPoints+numCurves+numSurfaces+numVolumes
             s=split(msh_Entities[i])
             if parse(Int,s[8]) != 0
                 volumeTagtoPhysicalTag[parse(Int,s[1])]=parse(Int,s[9])
             end
         end
-        deleteat!(msh_Entities,1:numVolumes)
     end
     
     return (pointTagtoPhysicalTag=pointTagtoPhysicalTag,

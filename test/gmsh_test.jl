@@ -15,3 +15,9 @@ end
     physicalTagtoName=(physicalTag1DtoName = Dict(4 => "Left",2 => "Right",3 => "Bottom",1 => "Top"), physicalTag2DtoName = Dict(5 => "Fluid"), physicalTag3DtoName = Dict{Int64,String}())
     @test gmsh_do_physicalnames(msh[:raw_PhysicalNames]) == physicalTagtoName
 end
+
+@testset "gmsh_do_entities" begin
+    msh=load_gmsh_file("data/gmsh_v41_1.msh")
+    entityTagtoPhysicalTag=(pointTagtoPhysicalTag = Dict{Int64,Int64}(), curveTagtoPhysicalTag = Dict(4 => 4,2 => 2,3 => 1,1 => 3), surfaceTagtoPhysicalTag = Dict(1 => 5), volumeTagtoPhysicalTag = Dict{Int64,Int64}())
+    @test gmsh_do_entities(msh[:raw_Entities]) == entityTagtoPhysicalTag
+end
