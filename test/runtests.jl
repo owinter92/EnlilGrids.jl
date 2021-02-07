@@ -1,6 +1,5 @@
 using EnlilGrids
 using Test
 
-@testset "EnlilGrids.jl" begin
-    # Write your tests here.
-end
+@info "Testing EnlilGrids"
+include("gmsh_test.jl")

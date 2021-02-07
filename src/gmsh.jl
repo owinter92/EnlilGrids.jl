@@ -1,45 +1,50 @@
 """
-aaa
-"""
+    load_gmsh_file(filename::AbstractString) -> NamedTuple
 
-function load_file_line_by_line(filename::AbstractString)
-    f=open("test.msh") do file
-        read(file, String)
-    end
-    split(f,"\n")
-end
+Loads the `filename` into separete arrays according to the gmsh file format style in ASCII mode.
 
+# Arguments
+- `filename::AbstractString`: name of the file to be loaded,
 
+# Keywords
 
-"""
-general
+# Returns
+- `NamedTuple`: the index where `val` is located in the `array`
+
+# Throws
+- `Error`: file with name `filename` does not exists.
+- `Error`: file with name `filename` is saved in binary mode.
 """
 function load_gmsh_file(filename::AbstractString)
-    msh=load_file_line_by_line("test.msh")
+    if !isfile(filename)
+        error("File $(filename) does not exist.") 
+    end
+    msh=load_file_line_by_line(filename)
 
     iMeshFormat=findfirst(x->x=="\$MeshFormat",msh)
     iEndMeshFormat=findfirst(x->x=="\$EndMeshFormat",msh)
-    iPhysicalNames=findfirst(x->x=="\$PhysicalNames",msh)
-    iEndPhysicalNames=findfirst(x->x=="\$EndPhysicalNames",msh)
-    iEntities=findfirst(x->x=="\$Entities",msh)
-    iEndEntities=findfirst(x->x=="\$EndEntities",msh)
-    iNodes=findfirst(x->x=="\$Nodes",msh)
-    iEndNodes=findfirst(x->x=="\$EndNodes",msh)
-    iElements=findfirst(x->x=="\$Elements",msh)
-    iEndElements=findfirst(x->x=="\$EndElements",msh)
-
     raw_MeshFormat=msh[iMeshFormat+1]
-    raw_PhysicalNames=msh[iPhysicalNames+1:iEndPhysicalNames-1]
-    raw_Entities=msh[iEntities+1:iEndEntities-1]
-    raw_Nodes=msh[iNodes+1:iEndNodes-1]
-    raw_Elements=msh[iElements+1:iEndElements-1]
-
     msh_version, msh_filetype, msh_datasize = split(raw_MeshFormat)
     if msh_filetype == "1"
         error("Gmsh mesh file format saved in binary mode. Please convert to ASCII mode.")
     end
 
+    iPhysicalNames=findfirst(x->x=="\$PhysicalNames",msh)
+    iEndPhysicalNames=findfirst(x->x=="\$EndPhysicalNames",msh) 
+    raw_PhysicalNames=msh[iPhysicalNames+1:iEndPhysicalNames-1]
     raw_PhysicalNames = [replace(v,"\""=>"") for v in raw_PhysicalNames]
+
+    iEntities=findfirst(x->x=="\$Entities",msh)
+    iEndEntities=findfirst(x->x=="\$EndEntities",msh)
+    raw_Entities=msh[iEntities+1:iEndEntities-1]   
+
+    iNodes=findfirst(x->x=="\$Nodes",msh)
+    iEndNodes=findfirst(x->x=="\$EndNodes",msh)
+    raw_Nodes=msh[iNodes+1:iEndNodes-1]   
+
+    iElements=findfirst(x->x=="\$Elements",msh)
+    iEndElements=findfirst(x->x=="\$EndElements",msh)
+    raw_Elements=msh[iElements+1:iEndElements-1]
 
     return (msh_version=msh_version,
             msh_PhysicalNames=raw_PhysicalNames,
