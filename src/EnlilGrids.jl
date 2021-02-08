@@ -8,6 +8,6 @@ export gmsh_do_physicalnames
 export gmsh_do_entities
 export gmsh_do_nodes
 export gmsh_do_elements
-#       load_gmsh
+export load_gmsh
 
 end
