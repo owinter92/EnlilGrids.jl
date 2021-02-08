@@ -155,7 +155,7 @@ function gmsh_do_entities(raw_Entities)
     
     if numVolumes != 0
         for i in 2+numPoints+numCurves+numSurfaces:1+numPoints+numCurves+numSurfaces+numVolumes
-            s=split(msh_Entities[i])
+            s=split(raw_Entities[i])
             if parse(Int,s[8]) != 0
                 volumeTagtoPhysicalTag[parse(Int,s[1])]=parse(Int,s[9])
             end
@@ -169,44 +169,56 @@ function gmsh_do_entities(raw_Entities)
 end
 
 """
-no parametric
+    gmsh_do_nodes(raw_Nodes) -> NamedTuple
+
+Split `raw_Nodes` created by [`load_gmsh_file`](@ref). Operates with only non parametric curves.
+
+# Arguments
+- `raw_Nodes`: data about nodes in gmsh,
+
+# Keywords
+
+# Returns
+- `NamedTuple`: one `Dict{Int,String}` for each dimension, `entityTag => physicalTag`: 
+    - nodeTag::Array{Int64,1},
+    - vx::Array{Float64,1},
+    - vy::Array{Float64,1},
+    - vz::Array{Float64,1}.
+
+# Throws
 """
-function do_nodes!(msh)
-    msh_Nodes=msh[:msh_Nodes]
-    
+function gmsh_do_nodes(raw_Nodes)
     numEntityBlocks, numNodes, minNodeTag, maxNodeTag =
-        (parse(Int,v) for v in split(popfirst!(msh_Nodes)))
+        (parse(Int,v) for v in split(raw_Nodes[1]))
 
     nodeTag=Int[]
-    sizehint!(nodeTag,length(msh_Nodes))
+    sizehint!(nodeTag,length(raw_Nodes))
     vx=Float64[]
-    sizehint!(vx,length(msh_Nodes))
+    sizehint!(vx,length(raw_Nodes))
     vy=Float64[]
-    sizehint!(vy,length(msh_Nodes))
+    sizehint!(vy,length(raw_Nodes))
     vz=Float64[]
-    sizehint!(vz,length(msh_Nodes))
+    sizehint!(vz,length(raw_Nodes))
 
-    i=1
-    while i < length(msh_Nodes)
+    i=2
+    while i < length(raw_Nodes)
         entityDim, entityTag, parametric, numNodesInBlock =
-            (parse(Int,v) for v in split(msh_Nodes[i]))
+            (parse(Int,v) for v in split(raw_Nodes[i]))
         i+=1
 
         for j in i:i+numNodesInBlock-1
-            push!(nodeTag,parse(Int,msh_Nodes[j]))
+            push!(nodeTag,parse(Int,raw_Nodes[j]))
         end
         i+=numNodesInBlock
         for j in i:i+numNodesInBlock-1
-            x,y,z = (parse(Float64,v) for v in split(msh_Nodes[i]))
+            x,y,z = (parse(Float64,v) for v in split(raw_Nodes[i]))
             push!(vx,x)
             push!(vy,y)
             push!(vz,z)
         end
         i+=numNodesInBlock
     end
-    
-    msh_Nodes=String[]
-    
+
     return (nodeTag=nodeTag,
             vx=vx,
             vy=vy,
@@ -214,13 +226,35 @@ function do_nodes!(msh)
 end
 
 """
-general
+    gmsh_do_elements(raw_Elements) -> NamedTuple
+
+Split `raw_Elements` created by [`load_gmsh_file`](@ref).
+
+# Arguments
+- `raw_Elements`: data about elements in gmsh,
+
+# Keywords
+
+# Returns
+- `NamedTuple`: one `Dict{Int,String}` for each dimension, `entityTag => physicalTag`: 
+    - entityTag1D   :: Array{Int64,1},
+    - entityTag2D   :: Array{Int64,1},
+    - entityTag3D   :: Array{Int64,1},
+    - elementType1D :: Array{Int64,1},
+    - elementType2D :: Array{Int64,1},
+    - elementType3D :: Array{Int64,1},
+    - elementTag1D  :: Array{Int64,1},
+    - elementTag2D  :: Array{Int64,1},
+    - elementTag3D  :: Array{Int64,1},
+    - nodeTags1D    :: Array{Array{Int64,1},1},
+    - nodeTags2D    :: Array{Array{Int64,1},1},
+    - nodeTags3D    :: Array{Array{Int64,1},1}.
+
+# Throws
 """
-function do_elements!(msh)
-    msh_Elements=msh[:msh_Elements]
-    
+function gmsh_do_elements(raw_Elements)
     numEntityBlocks, numElements, minElementTag, maxElementTag =
-        (parse(Int,v) for v in split(popfirst!(msh_Elements)))
+        (parse(Int,v) for v in split(raw_Elements[1]))
 
     entityTag1D=Int[]
     entityTag2D=Int[]
@@ -238,30 +272,29 @@ function do_elements!(msh)
     nodeTags2D=Array{Int,1}[]
     nodeTags3D=Array{Int,1}[]
     
-    i=1
-    while i<length(msh_Elements)
+    i=2
+    while i<length(raw_Elements)
         entityDim, entityTag, elementType, numElementsInBlock =
-            (parse(Int,v) for v in split(msh_Elements[i]))
+            (parse(Int,v) for v in split(raw_Elements[i]))
         i+=1
 
-        
         for j in i:i+numElementsInBlock-1
             if entityDim == 1
                 push!(entityTag1D,entityTag)
                 push!(elementType1D,elementType)
-                s=[parse(Int,v) for v in split(msh_Elements[j])]
+                s=[parse(Int,v) for v in split(raw_Elements[j])]
                 push!(elementTag1D,s[1])
                 push!(nodeTags1D,s[2:end])
             elseif entityDim == 2
                 push!(entityTag2D,entityTag)
                 push!(elementType2D,elementType)
-                s=[parse(Int,v) for v in split(msh_Elements[j])]
+                s=[parse(Int,v) for v in split(raw_Elements[j])]
                 push!(elementTag2D,s[1])
                 push!(nodeTags2D,s[2:end])
             elseif entityDim == 3
                 push!(entityTag3D,entityTag)
                 push!(elementType3D,elementType)
-                s=[parse(Int,v) for v in split(msh_Elements[j])]
+                s=[parse(Int,v) for v in split(raw_Elements[j])]
                 push!(elementTag3D,s[1])
                 push!(nodeTags3D,s[2:end])
             end
@@ -269,8 +302,6 @@ function do_elements!(msh)
         i+=numElementsInBlock
     end
 
-    msh_Elements=String[]
-    
     return (entityTag1D=entityTag1D,
             entityTag2D=entityTag2D,
             entityTag3D=entityTag3D,
