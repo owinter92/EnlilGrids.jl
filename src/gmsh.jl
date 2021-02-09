@@ -325,4 +325,9 @@ function load_gmsh(filename::AbstractString)
     tagToPhysicalTag=gmsh_do_entities(msh[:raw_Entities])
     nodes=gmsh_do_nodes(msh[:raw_Nodes])
     elements=gmsh_do_elements(msh[:raw_Elements])
+
+    return (physicalTagtoName=physicalTagtoName,
+            tagToPhysicalTag=tagToPhysicalTag,
+            nodes=nodes,
+            elements=elements)
 end
