@@ -9,6 +9,7 @@ RandomTweaks = "97e8ad84-0770-496d-b901-33f7e6c3230c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+MeshCore = "1.0"
 RandomTweaks = "0.1"
 julia = "1.5"
 
