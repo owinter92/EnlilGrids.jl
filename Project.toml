@@ -4,7 +4,9 @@ authors = ["Ondrej Winter <ondrej.winter@fs.cvut.cz> and contributors"]
 version = "0.1.3"
 
 [deps]
+MeshCore = "43a99bba-f459-4d0e-8139-f3df11d847d4"
 RandomTweaks = "97e8ad84-0770-496d-b901-33f7e6c3230c"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 RandomTweaks = "0.1"

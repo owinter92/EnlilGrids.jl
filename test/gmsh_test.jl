@@ -52,3 +52,15 @@ end
               nodeTags3D = [[12, 9, 14, 13], [11, 9, 14, 12], [14, 10, 11, 12], [14, 10, 12, 13], [14, 5, 1, 11], [11, 10, 5, 6], [8, 5, 14, 10], [9, 4, 1, 14], [14, 4, 8, 13], [1, 9, 11, 2], [3, 4, 9, 13], [6, 12, 10, 7], [10, 8, 7, 13], [12, 7, 3, 13], [11, 12, 6, 2], [3, 12, 9, 2], [1, 9, 14, 11], [5, 14, 10, 11], [10, 14, 8, 13], [7, 12, 10, 13], [9, 4, 14, 13], [3, 9, 12, 13], [10, 11, 12, 6], [12, 11, 9, 2]])
     @test gmsh_do_elements(msh[:raw_Elements]) == elements
 end
+
+@testset "load_gmsh" begin
+    msh = (physicalTagtoName = (physicalTag1DtoName = Dict(4 => "Line4",2 => "Line2",3 => "Line3",1 => "Line1"),
+           physicalTag2DtoName = Dict(5 => "Surface1"), physicalTag3DtoName = Dict{Int64,String}()),
+           tagToPhysicalTag = (pointTagtoPhysicalTag = Dict{Int64,Int64}(),
+           curveTagtoPhysicalTag = Dict(4 => 4,2 => 2,3 => 3,1 => 1),
+           surfaceTagtoPhysicalTag = Dict(1 => 5),
+           volumeTagtoPhysicalTag = Dict{Int64,Int64}()),
+           nodes = (nodeTag = [1, 2, 3, 4, 5], vx = [0.0, 1.0, 1.0, 0.0, 0.5], vy = [0.0, 0.0, 1.0, 1.0, 0.5], vz = [0.0, 0.0, 0.0, 0.0, 0.0]),
+           elements = (entityTag1D = [1, 2, 3, 4], entityTag2D = [1, 1, 1, 1], entityTag3D = Int64[], elementType1D = [1, 1, 1, 1], elementType2D = [2, 2, 2, 2], elementType3D = Int64[], elementTag1D = [1, 2, 3, 4], elementTag2D = [5, 6, 7, 8], elementTag3D = Int64[], nodeTags1D = [[1, 2], [2, 3], [3, 4], [4, 1]], nodeTags2D = [[1, 2, 5], [4, 1, 5], [2, 3, 5], [3, 4, 5]], nodeTags3D = Array{Int64,1}[]))
+    @test load_gmsh("data/gmsh_v41_2d_verycoarse.msh") == msh
+end

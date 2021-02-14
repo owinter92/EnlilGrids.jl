@@ -317,7 +317,7 @@ function gmsh_do_elements(raw_Elements)
 end
 
 """
-v 4.1
+gmsh v 4.1
 """
 function load_gmsh(filename::AbstractString)
     msh=load_gmsh_file(filename)
@@ -330,4 +330,31 @@ function load_gmsh(filename::AbstractString)
             tagToPhysicalTag=tagToPhysicalTag,
             nodes=nodes,
             elements=elements)
+end
+
+"""
+import MeshCore ird0.
+"""
+function import_gmsh(filename::AbstractString)
+    msh = load_gmsh(filename)
+
+    function vertices(nodes)
+        idxs = [rand(1:size(nodes.vz, 1)) for i in 1:10]
+        if isapprox(sum(nodes.vz[idxs]), 0.0, atol=1e-10)
+            xyz=reshape([nodes.vx; nodes.vy;], length(nodes.vx), 2)
+            return xyz
+        else
+            xyz=reshape([nodes.vx; nodes.vy; nodes.vz;], length(nodes.vx), 3)
+            return xyz
+        end
+    end
+
+    xyz = vertices(msh.nodes)
+    N, T = size(xyz, 2), eltype(xyz)
+    locs =  VecAttrib([SVector{N,T}(xyz[i, :]) for i in 1:size(xyz, 1)])
+    vrts = ShapeColl(P1, length(locs), "vertices")
+    vrts.attributes["geom"] = locs
+    shapes = ShapeColl(T3, size(msh.elements.nodeTags2D, 1), "elements")
+    ird0 = IncRel(shapes, vrts, msh.elements.nodeTags2D)
+    return ird0
 end
