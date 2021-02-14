@@ -64,3 +64,20 @@ end
            elements = (entityTag1D = [1, 2, 3, 4], entityTag2D = [1, 1, 1, 1], entityTag3D = Int64[], elementType1D = [1, 1, 1, 1], elementType2D = [2, 2, 2, 2], elementType3D = Int64[], elementTag1D = [1, 2, 3, 4], elementTag2D = [5, 6, 7, 8], elementTag3D = Int64[], nodeTags1D = [[1, 2], [2, 3], [3, 4], [4, 1]], nodeTags2D = [[1, 2, 5], [4, 1, 5], [2, 3, 5], [3, 4, 5]], nodeTags3D = Array{Int64,1}[]))
     @test load_gmsh("data/gmsh_v41_2d_verycoarse.msh") == msh
 end
+
+@testset "import_gmsh" begin
+    using MeshCore.Exports
+    using StaticArrays
+
+    msh = load_gmsh("data/gmsh_v41_2d_verycoarse.msh")
+    xyz = reshape([msh.nodes.vx; msh.nodes.vy;], length(msh.nodes.vx), 2)
+    N, T = size(xyz, 2), eltype(xyz)
+    locs =  VecAttrib([SVector{N,T}(xyz[i, :]) for i in 1:size(xyz, 1)])
+    vrts = ShapeColl(P1, length(locs), "vertices")
+    vrts.attributes["geom"] = locs
+    shapes = ShapeColl(T3, size(msh.elements.nodeTags2D, 1), "elements")
+    ir20 = IncRel(shapes, vrts, msh.elements.nodeTags2D)
+
+    mesh = import_gmsh("data/gmsh_v41_2d_verycoarse.msh")
+    @test mesh._v == ir20._v && mesh[1] == ir20[1] && mesh[2] == ir20[2] && mesh[3] == ir20[3] && mesh[4] == ir20[4]
+end
