@@ -80,4 +80,16 @@ end
 
     mesh = import_gmsh("data/gmsh_v41_2d_verycoarse.msh")
     @test mesh._v == ir20._v && mesh[1] == ir20[1] && mesh[2] == ir20[2] && mesh[3] == ir20[3] && mesh[4] == ir20[4]
+
+    msh = load_gmsh("data/gmsh_v41_3d_verycoarse.msh")
+    xyz = reshape([msh.nodes.vx; msh.nodes.vy; msh.nodes.vz;], length(msh.nodes.vx), 3)
+    N, T = size(xyz, 2), eltype(xyz)
+    locs =  VecAttrib([SVector{N,T}(xyz[i, :]) for i in 1:size(xyz, 1)])
+    vrts = ShapeColl(P1, length(locs), "vertices")
+    vrts.attributes["geom"] = locs
+    shapes = ShapeColl(T4, size(msh.elements.nodeTags3D, 1), "elements")
+    ir30 = IncRel(shapes, vrts, msh.elements.nodeTags3D)
+
+    mesh = import_gmsh("data/gmsh_v41_3d_verycoarse.msh")
+    @test mesh._v == ir30._v && mesh[1] == ir30[1] && mesh[2] == ir30[2] && mesh[3] == ir30[3] && mesh[4] == ir30[4]
 end
