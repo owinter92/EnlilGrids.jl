@@ -378,7 +378,7 @@ end
 """
     import_gmsh(filename::AbstractString) -> ir(d,0)
 
-Loads `filename` into incidence [`ir(d,0)`](@https://github.com/PetrKryslUCSD/MeshCore.jl).
+Loads `filename` into incidence [`ir(d,0)`](https://github.com/PetrKryslUCSD/MeshCore.jl).
 
 # Arguments
 - `filename::AbstractString`: name of the file to be loaded,
