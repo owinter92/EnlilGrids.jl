@@ -32,14 +32,23 @@ end
     @test gmsh_do_entities(msh.raw_Entities) == test_entities
 end
 
-#@testset "gmsh_do_nodes" begin
+@testset "gmsh_do_nodes" begin
+    include("data/gmsh/gmsh41_triangles_coarse.jl")
+    msh = load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh")
+    @test gmsh_do_nodes(msh.raw_Nodes) == test_nodes
+
+    include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
+    msh = load_gmsh_file("data/gmsh/gmsh41_tetrahedrons_coarse.msh")
+    @test gmsh_do_nodes(msh.raw_Nodes) == test_nodes
+
+
 #    msh=load_gmsh_file("data/gmsh_v41_3d_verycoarse.msh")
 #    nodes=(nodeTag = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 #           vx = [0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.5, 0.5, 0.5, 1.0, 0.5, 0.0],
 #           vy = [0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.5, 0.5, 0.0, 0.5, 1.0, 0.5],
 #           vz = [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.5, 0.5, 0.5, 0.5])
 #    @test gmsh_do_nodes(msh[:raw_Nodes]) == nodes
-#end
+end
 #
 #@testset "gmsh_do_elements" begin
 #    msh=load_gmsh_file("data/gmsh_v41_3d_verycoarse.msh")
