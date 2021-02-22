@@ -3,7 +3,10 @@
     @test_throws ErrorException("Gmsh mesh file format saved in binary mode. Please convert to ASCII mode.") load_gmsh_file("data/gmsh/gmsh41_triangles_coarse_only_mesh_bin.msh")
     
     include("data/gmsh/gmsh41_triangles_coarse_only_mesh.jl")
-    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse_only_mesh.msh") == msh_gmsh_triangles_coarse_only_mesh
+    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse_only_mesh.msh") == msh
+
+    include("data/gmsh/gmsh41_triangles_coarse.jl")
+    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh") == msh
 end
 
 #@testset "gmsh_do_physicalnames" begin
