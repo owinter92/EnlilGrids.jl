@@ -2,15 +2,15 @@ msh = (
     msh_version = "4.1",
     raw_PhysicalNames = [
         "9",
-        "0 1 Point 1",
-        "0 2 Point 2",
-        "0 3 Point 3",
-        "0 4 Point 4",
-        "1 5 Curve 1",
-        "1 6 Curve 2",
-        "1 7 Curve 3",
-        "1 8 Curve 4",
-        "2 9 Surface 1"
+        "0 1 Point1",
+        "0 2 Point2",
+        "0 3 Point3",
+        "0 4 Point4",
+        "1 5 Curve1",
+        "1 6 Curve2",
+        "1 7 Curve3",
+        "1 8 Curve4",
+        "2 9 Surface1"
     ],
     raw_Entities = SubString{String}[
         "4 4 1 0",
@@ -170,4 +170,23 @@ msh = (
         "61 25 19 30 ",
         "62 25 20 26 "
     ]
+)
+
+physicals = (
+    physicalTag0DtoName = Dict(
+        4 => "Point4",
+        2 => "Point2",
+        3 => "Point3",
+        1 => "Point1"
+    ),
+    physicalTag1DtoName = Dict(
+        7 => "Curve3",
+        5 => "Curve1",
+        8 => "Curve4",
+        6 => "Curve2"
+    ),
+    physicalTag2DtoName = Dict(
+        9 => "Surface1"
+    ),
+    physicalTag3DtoName = Dict{Int64,String}()
 )

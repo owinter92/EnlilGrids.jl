@@ -9,14 +9,12 @@
     @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh") == msh
 end
 
-#@testset "gmsh_do_physicalnames" begin
-#    msh=load_gmsh_file("data/gmsh_v41_3d_verycoarse.msh")
-#    physicalTagtoName=(physicalTag1DtoName = Dict(16 => "Line8",11 => "Line3",9 => "Line1",10 => "Line2",19 => "Line11",17 => "Line9",20 => "Line12",13 => "Line5",14 => "Line6",15 => "Line7",12 => "Line4",18 => "Line10"),
-#                       physicalTag2DtoName = Dict(23 => "Surface3",26 => "Surface6",25 => "Surface5",21 => "Surface1",22 => "Surface2",24 => "Surface4"),
-#                       physicalTag3DtoName = Dict(27 => "Volume1")) 
-#    @test gmsh_do_physicalnames(msh[:raw_PhysicalNames]) == physicalTagtoName
-#end
-#
+@testset "gmsh_do_physicalnames" begin
+    include("data/gmsh/gmsh41_triangles_coarse.jl")
+    load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh")
+    @test gmsh_do_physicalnames(msh.raw_PhysicalNames) == physicals
+end
+
 #@testset "gmsh_do_entities" begin
 #    msh=load_gmsh_file("data/gmsh_v41_3d_verycoarse.msh")
 #    entityTagtoPhysicalTag=(pointTagtoPhysicalTag = Dict(0 => 0,4 => 5,7 => 8,2 => 3,3 => 4,5 => 6,6 => 7,1 => 2),
