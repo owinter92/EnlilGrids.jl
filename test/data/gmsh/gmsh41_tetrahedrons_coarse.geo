@@ -60,4 +60,11 @@ Physical Curve("Curve10") = {10};
 Physical Curve("Curve11") = {11};
 Physical Curve("Curve12") = {12};
 
+Physical Surface("Surface1") = {1};
+Physical Surface("Surface2") = {2};
+Physical Surface("Surface3") = {3};
+Physical Surface("Surface4") = {4};
+Physical Surface("Surface5") = {5};
+Physical Surface("Surface6") = {6};
+
 Physical Volume("Volume1") = {1};

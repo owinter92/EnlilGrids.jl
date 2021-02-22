@@ -17,9 +17,9 @@ end
     msh = load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh")
     @test gmsh_do_physicalnames(msh.raw_PhysicalNames) == test_physicals
 
-    #include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
-    #msh = load_gmsh_file("data/gmsh/gmsh41_tetrahedrons_coarse.msh")
-    #@test gmsh_do_physicalnames(msh.raw_PhysicalNames) == test_physicals
+    include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
+    msh = load_gmsh_file("data/gmsh/gmsh41_tetrahedrons_coarse.msh")
+    @test gmsh_do_physicalnames(msh.raw_PhysicalNames) == test_physicals
 end
 
 #@testset "gmsh_do_entities" begin
