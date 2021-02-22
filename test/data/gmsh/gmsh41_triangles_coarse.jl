@@ -1,4 +1,4 @@
-msh = (
+test_msh = (
     msh_version = "4.1",
     raw_PhysicalNames = [
         "9",
@@ -172,7 +172,7 @@ msh = (
     ]
 )
 
-physicals = (
+test_physicals = (
     physicalTag0DtoName = Dict(
         4 => "Point4",
         2 => "Point2",

@@ -3,16 +3,23 @@
     @test_throws ErrorException("Gmsh mesh file format saved in binary mode. Please convert to ASCII mode.") load_gmsh_file("data/gmsh/gmsh41_triangles_coarse_only_mesh_bin.msh")
     
     include("data/gmsh/gmsh41_triangles_coarse_only_mesh.jl")
-    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse_only_mesh.msh") == msh
+    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse_only_mesh.msh") == test_msh
 
     include("data/gmsh/gmsh41_triangles_coarse.jl")
-    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh") == msh
+    @test load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh") == test_msh
+
+    include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
+    @test load_gmsh_file("data/gmsh/gmsh41_tetrahedrons_coarse.msh") == test_msh
 end
 
 @testset "gmsh_do_physicalnames" begin
     include("data/gmsh/gmsh41_triangles_coarse.jl")
-    load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh")
-    @test gmsh_do_physicalnames(msh.raw_PhysicalNames) == physicals
+    msh = load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh")
+    @test gmsh_do_physicalnames(msh.raw_PhysicalNames) == test_physicals
+
+    #include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
+    #msh = load_gmsh_file("data/gmsh/gmsh41_tetrahedrons_coarse.msh")
+    #@test gmsh_do_physicalnames(msh.raw_PhysicalNames) == test_physicals
 end
 
 #@testset "gmsh_do_entities" begin
