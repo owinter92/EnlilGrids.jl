@@ -68,7 +68,7 @@ end
     gmsh_do_physicalnames(raw_PhysicalNames) -> NamedTuple
 
 Split `raw_PhysicalNames` created by [`load_gmsh_file`](@ref) in to one `Dict` for each
-dimension.
+dimension. No spaces in names allowed.
 
 # Arguments
 - `raw_PhysicalNames`: data about physical names in gmsh file,
@@ -77,6 +77,7 @@ dimension.
 
 # Returns
 - `NamedTuple`: one `Dict{Int,String}` for each dimension, `physicalTag => Name`:
+    - physicalTag0DtoName,
     - physicalTag1DtoName,
     - physicalTag2DtoName,
     - physicalTag3DtoName.
@@ -86,12 +87,15 @@ dimension.
 function gmsh_do_physicalnames(raw_PhysicalNames)
     n = parse(Int, raw_PhysicalNames[1])
 
+    physicalTag0DtoName = Dict{Int,String}()
     physicalTag1DtoName = Dict{Int,String}()
     physicalTag2DtoName = Dict{Int,String}()
     physicalTag3DtoName = Dict{Int,String}()
     for i in 2:length(raw_PhysicalNames)
         s = split(raw_PhysicalNames[i])
-        if s[1] == "1"
+        if s[1] == "0"
+            physicalTag0DtoName[parse(Int, s[2])] = s[3]
+        elseif s[1] == "1"
             physicalTag1DtoName[parse(Int, s[2])] = s[3]
         elseif s[1] == "2"
             physicalTag2DtoName[parse(Int, s[2])] = s[3]
@@ -101,6 +105,7 @@ function gmsh_do_physicalnames(raw_PhysicalNames)
     end
 
     return (
+        physicalTag0DtoName=physicalTag0DtoName,
         physicalTag1DtoName=physicalTag1DtoName,
         physicalTag2DtoName=physicalTag2DtoName,
         physicalTag3DtoName=physicalTag3DtoName,
