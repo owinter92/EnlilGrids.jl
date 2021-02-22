@@ -376,7 +376,19 @@ function load_gmsh(filename::AbstractString)
 end
 
 """
-import MeshCore ird0.
+    import_gmsh(filename::AbstractString) -> ir(d,0)
+
+Loads `filename` into incidence [`ir(d,0)`](@https://github.com/PetrKryslUCSD/MeshCore.jl).
+
+# Arguments
+- `filename::AbstractString`: name of the file to be loaded,
+
+# Keywords
+
+# Returns
+- `ir(d,0)`: MeshCore's incidence.
+
+# Throws
 """
 function import_gmsh(filename::AbstractString)
     msh = load_gmsh(filename)
@@ -410,5 +422,6 @@ function import_gmsh(filename::AbstractString)
     vrts = ShapeColl(P1, length(locs), "vertices")
     vrts.attributes["geom"] = locs
     shapes, elements = get_shapes(msh.elements)
+
     return ird0 = IncRel(shapes, vrts, elements)
 end
