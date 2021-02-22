@@ -1132,3 +1132,41 @@ test_physicals = (
         27 => "Volume1"
     )
 )
+
+test_entities = (
+    pointTagtoPhysicalTag = Dict(
+        7 => 7,
+        4 => 4,
+        2 => 2,
+        3 => 3,
+        5 => 5,
+        8 => 8,
+        6 => 6,
+        1 => 1
+    ),
+    curveTagtoPhysicalTag = Dict(
+        2 => 10,
+        11 => 19,
+        7 => 15,
+        9 => 17,
+        10 => 18,
+        8 => 16,
+        6 => 14,
+        4 => 12,
+        3 => 11,
+        5 => 13,
+        12 => 20,
+        1 => 9
+    ),
+    surfaceTagtoPhysicalTag = Dict(
+        4 => 24,
+        2 => 22,
+        3 => 23,
+        5 => 25,
+        6 => 26,
+        1 => 21
+    ),
+    volumeTagtoPhysicalTag = Dict(
+        1 => 27
+    )
+)

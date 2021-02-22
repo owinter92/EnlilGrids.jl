@@ -22,15 +22,16 @@ end
     @test gmsh_do_physicalnames(msh.raw_PhysicalNames) == test_physicals
 end
 
-#@testset "gmsh_do_entities" begin
-#    msh=load_gmsh_file("data/gmsh_v41_3d_verycoarse.msh")
-#    entityTagtoPhysicalTag=(pointTagtoPhysicalTag = Dict(0 => 0,4 => 5,7 => 8,2 => 3,3 => 4,5 => 6,6 => 7,1 => 2),
-#                            curveTagtoPhysicalTag = Dict(2 => 10,11 => 19,7 => 15,9 => 17,10 => 18,8 => 16,6 => 14,4 => 12,3 => 11,5 => 13,12 => 20,1 => 9),
-#                            surfaceTagtoPhysicalTag = Dict(4 => 24,2 => 22,3 => 23,5 => 25,6 => 26,1 => 21),
-#                            volumeTagtoPhysicalTag = Dict(1 => 27))
-#    @test gmsh_do_entities(msh[:raw_Entities]) == entityTagtoPhysicalTag
-#end
-#
+@testset "gmsh_do_entities" begin
+    include("data/gmsh/gmsh41_triangles_coarse.jl")
+    msh = load_gmsh_file("data/gmsh/gmsh41_triangles_coarse.msh")
+    @test gmsh_do_entities(msh.raw_Entities) == test_entities
+
+    include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
+    msh = load_gmsh_file("data/gmsh/gmsh41_tetrahedrons_coarse.msh")
+    @test gmsh_do_entities(msh.raw_Entities) == test_entities
+end
+
 #@testset "gmsh_do_nodes" begin
 #    msh=load_gmsh_file("data/gmsh_v41_3d_verycoarse.msh")
 #    nodes=(nodeTag = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],

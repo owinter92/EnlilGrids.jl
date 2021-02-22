@@ -190,3 +190,22 @@ test_physicals = (
     ),
     physicalTag3DtoName = Dict{Int64,String}()
 )
+
+test_entities = (
+    pointTagtoPhysicalTag = Dict(
+        4 => 4,
+        2 => 2,
+        3 => 3,
+        1 => 1
+    ),
+    curveTagtoPhysicalTag = Dict(
+        4 => 8,
+        2 => 6,
+        3 => 7,
+        1 => 5
+    ),
+    surfaceTagtoPhysicalTag = Dict(
+        1 => 9
+    ),
+    volumeTagtoPhysicalTag = Dict{Int64,Int64}()
+)
