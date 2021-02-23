@@ -3,6 +3,7 @@ module EnlilGrids
 using MeshCore.Exports
 using RandomTweaks
 using StaticArrays
+using Statistics
 
 include("gmsh.jl")
 export load_gmsh_file

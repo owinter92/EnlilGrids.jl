@@ -66,31 +66,36 @@ end
          elements=test_elements)
 end
 
-#@testset "import_gmsh" begin
-#    using MeshCore.Exports
-#    using StaticArrays
-#
-#    msh = load_gmsh("data/gmsh_v41_2d_verycoarse.msh")
-#    xyz = reshape([msh.nodes.vx; msh.nodes.vy;], length(msh.nodes.vx), 2)
-#    N, T = size(xyz, 2), eltype(xyz)
-#    locs =  VecAttrib([SVector{N,T}(xyz[i, :]) for i in 1:size(xyz, 1)])
-#    vrts = ShapeColl(P1, length(locs), "vertices")
-#    vrts.attributes["geom"] = locs
-#    shapes = ShapeColl(T3, size(msh.elements.nodeTags2D, 1), "elements")
-#    ir20 = IncRel(shapes, vrts, msh.elements.nodeTags2D)
-#
-#    mesh = import_gmsh("data/gmsh_v41_2d_verycoarse.msh")
-#    @test mesh._v == ir20._v && mesh[1] == ir20[1] && mesh[2] == ir20[2] && mesh[3] == ir20[3] && mesh[4] == ir20[4]
-#
-#    msh = load_gmsh("data/gmsh_v41_3d_verycoarse.msh")
-#    xyz = reshape([msh.nodes.vx; msh.nodes.vy; msh.nodes.vz;], length(msh.nodes.vx), 3)
-#    N, T = size(xyz, 2), eltype(xyz)
-#    locs =  VecAttrib([SVector{N,T}(xyz[i, :]) for i in 1:size(xyz, 1)])
-#    vrts = ShapeColl(P1, length(locs), "vertices")
-#    vrts.attributes["geom"] = locs
-#    shapes = ShapeColl(T4, size(msh.elements.nodeTags3D, 1), "elements")
-#    ir30 = IncRel(shapes, vrts, msh.elements.nodeTags3D)
-#
-#    mesh = import_gmsh("data/gmsh_v41_3d_verycoarse.msh")
-#    @test mesh._v == ir30._v && mesh[1] == ir30[1] && mesh[2] == ir30[2] && mesh[3] == ir30[3] && mesh[4] == ir30[4]
-#end
+@testset "import_gmsh" begin
+    include("data/gmsh/gmsh41_triangles_coarse.jl")
+    ir20 = import_gmsh("data/gmsh/gmsh41_triangles_coarse.msh")
+
+    @test ir20._v == test_ir20._v
+    @test ir20.name == test_ir20.name
+    
+    @test ir20.left.name == test_ir20.left.name
+    @test ir20.left.attributes == test_ir20.left.attributes
+    @test ir20.left.nshapes == test_ir20.left.nshapes
+    @test ir20.left.shapedesc == test_ir20.left.shapedesc
+
+    @test ir20.right.name == test_ir20.right.name
+    @test ir20.right.attributes == test_ir20.right.attributes
+    @test ir20.right.nshapes == test_ir20.right.nshapes
+    @test ir20.right.shapedesc == test_ir20.right.shapedesc
+
+    include("data/gmsh/gmsh41_tetrahedrons_coarse.jl")
+    ir30 = import_gmsh("data/gmsh/gmsh41_tetrahedrons_coarse.msh")
+
+    @test ir30._v == test_ir30._v
+    @test ir30.name == test_ir30.name
+    
+    @test ir30.left.name == test_ir30.left.name
+    @test ir30.left.attributes == test_ir30.left.attributes
+    @test ir30.left.nshapes == test_ir30.left.nshapes
+    @test ir30.left.shapedesc == test_ir30.left.shapedesc
+
+    @test ir30.right.name == test_ir30.right.name
+    @test ir30.right.attributes == test_ir30.right.attributes
+    @test ir30.right.nshapes == test_ir30.right.nshapes
+    @test ir30.right.shapedesc == test_ir30.right.shapedesc
+end

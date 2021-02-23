@@ -397,10 +397,9 @@ Loads `filename` into incidence [`ir(d,0)`](https://github.com/PetrKryslUCSD/Mes
 """
 function import_gmsh(filename::AbstractString)
     msh = load_gmsh(filename)
-
-    function vertices(nodes)
+    function get_vertices(nodes)
         idxs = [rand(1:size(nodes.vz, 1)) for i in 1:10]
-        if isapprox(sum(nodes.vz[idxs]), 0.0; atol=1e-10)
+        if isapprox(mean(nodes.vz[idxs]), nodes.vz[idxs[1]]; atol=1e-12)
             xyz = reshape([nodes.vx; nodes.vy], length(nodes.vx), 2)
             return xyz
         else
@@ -409,7 +408,8 @@ function import_gmsh(filename::AbstractString)
         end
     end
     function get_shapes(elements)
-        GMSH_DESC = Dict{Int,String}(1 => "L2", 2 => "T3", 3 => "Q4", 4 => "T4", 5 => "Q8")
+        GMSH_DESC = Dict{Int,String}(
+            1 => "L2", 2 => "T3", 3 => "Q4", 4 => "T4", 5 => "Q8")
         if length(elements.elementTag3D) == 0
             shape = SHAPE_DESC[GMSH_DESC[elements.elementType2D[1]]]
             shapes = ShapeColl(shape, size(elements.nodeTags2D, 1), "elements")
@@ -421,7 +421,7 @@ function import_gmsh(filename::AbstractString)
         end
     end
 
-    xyz = vertices(msh.nodes)
+    xyz = get_vertices(msh.nodes)
     N, T = size(xyz, 2), eltype(xyz)
     locs = VecAttrib([SVector{N,T}(xyz[i, :]) for i in 1:size(xyz, 1)])
     vrts = ShapeColl(P1, length(locs), "vertices")

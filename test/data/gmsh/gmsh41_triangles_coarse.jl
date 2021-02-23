@@ -595,3 +595,13 @@ test_elements = (
     ],
     nodeTags3D = Array{Int64,1}[]
 )
+
+using MeshCore.Exports
+using StaticArrays
+test_xyz = reshape([test_nodes.vx; test_nodes.vy], length(test_nodes.vx), 2)
+test_N, test_T = size(test_xyz, 2), eltype(test_xyz)
+test_locs = VecAttrib([SVector{test_N,test_T}(test_xyz[i, :]) for i in 1:size(test_xyz, 1)])
+test_vertices = ShapeColl(P1, length(test_locs), "vertices")
+test_vertices.attributes["geom"] = test_locs
+test_shapes = ShapeColl(T3, size(test_elements.nodeTags2D, 1), "elements")
+test_ir20 = IncRel(test_shapes, test_vertices, test_elements.nodeTags2D)
